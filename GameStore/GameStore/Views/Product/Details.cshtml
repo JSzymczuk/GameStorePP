@@ -1,0 +1,119 @@
+﻿@model GameStore.Models.ProductDetailsViewModel
+@using GameStore.Helpers
+
+@{
+    ViewBag.Title = Model.Name;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <h4>Informacje o produkcie</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PlatformName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PlatformName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Studio)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Studio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReleaseDate)
+        </dt>
+
+        <dd>
+            @if (Model.ReleaseDate.HasValue)
+            {
+                @Model.ReleaseDate.Value.ToDisplayableDate()
+            }
+            else
+            {
+                @Html.Encode("nieznana")
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd>
+            @string.Format("{0:N2}zł", Model.Price)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CoverPath)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CoverPath)
+        </dd>
+        
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.MinimalRequirements)
+        </dt>
+        <dd>
+            @if (Model.MinimalRequirements != null)
+            {
+                @Html.Partial("_RequirementsDetails", Model.MinimalRequirements)
+            }
+            else
+            {
+                @Html.Encode("nieokreślone")
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RecommendedRequirements)
+        </dt>
+        <dd>
+            @if (Model.RecommendedRequirements != null)
+            {
+                @Html.Partial("_RequirementsDetails", Model.RecommendedRequirements)
+            }
+            else
+            {
+                @Html.Encode("nieokreślone")
+            }
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.Pegi)
+        </dt>
+        <dd>
+            @foreach (var pegi in Model.Pegi)
+            {
+                <img src="../../Images/@pegi.IconPath" title="@pegi.Description" class="pegi-icon">
+            }
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Powrót", "Index", "Search")
+</p>

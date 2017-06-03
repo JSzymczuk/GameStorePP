@@ -1,0 +1,140 @@
+﻿@model GameStore.Models.ProductCreateViewModel
+
+@{
+    ViewBag.Title = Model.Name;
+    ViewBag.ReleaseDateString = Model.ReleaseDate.HasValue ? 
+        string.Format("{0:D4}/{1:D2}/{2:D2}", 
+        Model.ReleaseDate.Value.Year, 
+        Model.ReleaseDate.Value.Month, 
+        Model.ReleaseDate.Value.Day)
+        : string.Empty;
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Edycja produktu</h4>
+        <hr />
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.DateAdded)
+        @Html.HiddenFor(model => model.IsVisible)
+        @Html.HiddenFor(model => model.CoverPath)
+        @Html.HiddenFor(model => model.ThumbPath)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PlatformId, "Platforma", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("PlatformId", ViewBag.PlatformSelection as SelectList, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PlatformId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Studio, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Studio, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Studio, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ReleaseDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ReleaseDate, new { htmlAttributes = new { @class = "form-control", @Value = ViewBag.ReleaseDateString } })
+                @Html.ValidationMessageFor(model => model.ReleaseDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Description, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @Html.Partial("_Requirements", Model)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PegiAgeId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div>
+                    @foreach (var pegiAge in ViewBag.PegiAge)
+                    {
+                        <span class="pegi-selection">
+                            @Html.RadioButtonFor(model => Model.PegiAgeId, (int)pegiAge.Id, new { @class = "form-control" })
+                            <img src="../../Images/@pegiAge.IconPath" title="@pegiAge.Description" class="pegi-icon">
+                        </span>
+                    }
+                </div>
+
+                <div>
+                    @for (int i = 0; i < Model.PegiContent.Count; ++i)
+                    {
+                        <span class="pegi-selection">
+                            @Html.CheckBoxFor(model => Model.PegiContent[i].Checked, new { @class = "form-control" })
+                            @Html.HiddenFor(model => Model.PegiContent[i].Id)
+                            @Html.HiddenFor(model => Model.PegiContent[i].Name)
+                            @Html.HiddenFor(model => Model.PegiContent[i].Description)
+                            @Html.HiddenFor(model => Model.PegiContent[i].IconPath)
+                            <img src="../../Images/@Model.PegiContent[i].IconPath" title="@Model.PegiContent[i].Description" class="pegi-icon">
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Zatwierdź zmiany" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Powrót", "Index", "Search")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $.validator.methods.range = function (value, element, param) {
+            var globalizedValue = value.replace(",", ".");
+            return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+        }
+
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
+        }
+        //Date dd/MM/yyyy
+        $.validator.methods.date = function (value, element) {
+            var date = value.split("/");
+            return this.optional(element) || !/Invalid|NaN/.test(new Date(date[2], date[1], date[0]).toString());
+        }
+    </script>
+}

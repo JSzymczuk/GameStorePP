@@ -1,0 +1,40 @@
+﻿@model GameStore.Models.Requirements
+
+<ul class="requirements-list">
+    @if (!string.IsNullOrEmpty(Model.OS))
+    {
+        <li>
+            @Html.DisplayNameFor(model => model.OS): @Html.DisplayFor(model => model.OS);
+        </li>
+    }
+    @if (!string.IsNullOrEmpty(Model.CPU))
+    {
+        <li>
+            @Html.DisplayNameFor(model => model.CPU): @Html.DisplayFor(model => model.CPU);
+        </li>
+    }
+    @if (!string.IsNullOrEmpty(Model.GPU))
+    {
+        <li>
+            @Html.DisplayNameFor(model => model.GPU): @Html.DisplayFor(model => model.GPU);
+        </li>
+    }
+    @if (!string.IsNullOrEmpty(Model.RAM))
+    {
+        <li>
+            @Html.DisplayNameFor(model => model.RAM): @Html.DisplayFor(model => model.RAM);
+        </li>
+    }
+    @if (!string.IsNullOrEmpty(Model.OS))
+    {
+        <li>
+            @Html.DisplayNameFor(model => model.HDD): @Html.DisplayFor(model => model.HDD);
+        </li>
+    }
+    @if (!string.IsNullOrEmpty(Model.DirectX))
+    {
+        <li>
+            @Html.DisplayFor(model => model.DirectX);
+        </li>
+    }
+</ul>

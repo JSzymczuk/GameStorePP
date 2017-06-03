@@ -1,0 +1,52 @@
+﻿@model GameStore.Models.ProductCreateViewModel
+
+<div class="requirements">
+    <h4>Minimalne wymagania sprzętowe</h4>
+    <a id="min-reqs-show-link">Rozwiń wymagania</a>
+    <a id="min-reqs-hide-link">Zwiń wymagania</a>
+    <div id="min-requirements" class="requirements-group">
+        @{
+            Html.RenderPartial("_RequirementsEdit",
+            Model.MinimalRequirements ?? new GameStore.Models.Requirements(),
+            new ViewDataDictionary { { "Prefix", "MinimalRequirements" } });
+        }
+    </div>
+</div>
+
+<div class="requirements">
+    <h4>Zalecane wymagania sprzętowe</h4>
+    <a id="rec-reqs-show-link">Rozwiń wymagania</a>
+    <a id="rec-reqs-hide-link">Zwiń wymagania</a>
+    <div id="rec-requirements" class="requirements-group">
+        @{
+            Html.RenderPartial("_RequirementsEdit",
+            Model.RecommendedRequirements ?? new GameStore.Models.Requirements(),
+            new ViewDataDictionary { { "Prefix", "RecommendedRequirements" } });
+        }
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#min-reqs-show-link").on("click", function () {
+            $("#min-reqs-show-link").hide();
+            $("#min-reqs-hide-link").css('display', 'block');
+            $("#min-requirements").show();
+        });
+        $("#min-reqs-hide-link").on("click", function () {
+            $("#min-reqs-show-link").css('display', 'block');
+            $("#min-reqs-hide-link").hide();
+            $("#min-requirements").hide();
+        });
+        $("#rec-reqs-show-link").on("click", function () {
+            $("#rec-reqs-show-link").hide();
+            $("#rec-reqs-hide-link").css('display', 'block');
+            $("#rec-requirements").show();
+        });
+        $("#rec-reqs-hide-link").on("click", function () {
+            $("#rec-reqs-show-link").css('display', 'block');
+            $("#rec-reqs-hide-link").hide();
+            $("#rec-requirements").hide();
+        });
+    });
+</script>
