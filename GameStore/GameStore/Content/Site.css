@@ -24,7 +24,7 @@ textarea {
     resize: none;
 }
 
-textarea.form-control {
+textareas.form-control {
     height: 150px;
 }
 
@@ -33,10 +33,10 @@ textarea.form-control {
     display: inline-block;
 }
 
-.pegi-selection input[type=radio], .pegi-selection input[type=checkbox] {
+.pegi-selection input[type=radio], .pegi-selection input[type=checkbox], .custom-checkbox {
     width: 20px;
     margin: 2px 0;
-    box-shadow: none;
+    box-shadow: none !important;
     display: inline-block;
 }
 
@@ -85,4 +85,45 @@ textarea.form-control {
 }
 .requirements-list li {
     display: block;
+}
+
+.icon-link {
+    background-image: url(../Images/icons-2.png);
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background-position-y: 0;
+    overflow: hidden;
+    text-indent: 9999px;
+    opacity: 1;
+    text-decoration: none;
+    line-height: 1;
+}
+.icon-link:hover {    
+    background-position-y: -30px;
+    opacity: 1.0;
+}
+
+.icon-link-edit {
+    background-position-x: -60px;
+}
+.icon-link-details {
+    background-position-x: -90px;
+}
+.icon-link-delete {
+    background-position-x: -120px;
+}
+
+.left {
+    float: left;
+}
+.right {
+    float: right;
+}
+.clear {
+    clear: both;
+}
+.overflow-hidden {
+    overflow: hidden;
 }

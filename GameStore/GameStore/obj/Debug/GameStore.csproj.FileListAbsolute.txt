@@ -207,3 +207,5 @@ C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameS
 C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.csproj.GenerateResource.Cache
 C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.dll
 C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.pdb
+C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.Migrations._201706040.resources
+C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.csprojResolveAssemblyReference.cache

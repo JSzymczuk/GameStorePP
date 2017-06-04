@@ -12,7 +12,7 @@
 
 <h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Product", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
@@ -23,10 +23,6 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.DateAdded)
-        @Html.HiddenFor(model => model.IsVisible)
-        @Html.HiddenFor(model => model.CoverPath)
-        @Html.HiddenFor(model => model.ThumbPath)
 
         <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -49,6 +45,34 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.Label("Okładka", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (!string.IsNullOrWhiteSpace(Model.ThumbPath))
+                {
+                    <div>
+                        <img src="~/Images/@Model.ThumbPath" />
+                        <p>@Model.CoverPath</p>
+                    </div>
+                    <div>
+                        <p><b>Ustaw nową okładkę:</b></p>
+                        <p><input type="file" id="Cover" name="cover" /></p>
+                    </div>
+                    <div>
+                        <p>
+                            <b>Usunąć okładkę? </b>
+                            @Html.EditorFor(model => model.DeleteCover, new { htmlAttributes = new { @class = "form-control custom-checkbox" } })
+                            @Html.ValidationMessageFor(model => model.DeleteCover, "", new { @class = "text-danger" })
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <input type="file" id="Cover" name="cover" />
+                }
             </div>
         </div>
 

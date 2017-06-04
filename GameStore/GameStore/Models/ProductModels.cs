@@ -13,14 +13,6 @@ namespace GameStore.Models
         public int PlatformId { get; set; }
         public int? MinimumRequirementsId { get; set; }
         public int? RecommendedRequirementsId { get; set; }
-
-        [Display(Name = "Widoczne?")]
-        public bool IsVisible { get; set; }
-        [Display(Name = "Data dodania")]
-        public DateTime DateAdded { get; set; }
-        
-        [Display(Name = "Cena")]
-        public decimal? Price { get; set; }
         
         public string CoverPath { get; set; }
         public string ThumbPath { get; set; }
@@ -33,13 +25,44 @@ namespace GameStore.Models
         public DateTime? ReleaseDate { get; set; }
         [Display(Name = "Opis")]
         public string Description { get; set; }
+        [Display(Name = "Cena")]
+        public decimal? Price { get; set; }
 
+        [Display(Name = "Stan")]
+        public ProductState State { get; set; }
+        [Display(Name = "Data dodania")]
+        public DateTime DateAdded { get; set; }
+        [Display(Name = "Dodane przez")]
+        public string AddedById { get; set; }
+        [Display(Name = "Data edycji")]
+        public DateTime? DateEdited { get; set; }
+        [Display(Name = "Edytowane przez")]
+        public string EditedById { get; set; }
+        [Display(Name = "Data usunięcia")]
+        public DateTime? DateDeleted { get; set; }
+        [Display(Name = "Usunięte przez")]
+        public string DeletedById { get; set; }
 
+        public virtual AppUser AddedBy { get; set; }
+        public virtual AppUser EditedBy { get; set; }
+        public virtual AppUser DeletedBy { get; set; }
         public virtual Platform Platform { get; set; }
         public virtual Requirements MinimumRequirements { get; set; }
         public virtual Requirements RecommendedRequirements { get; set; }
         
         public virtual ICollection<Pegi> Pegi { get; set; }
+    }
+
+    public enum ProductState
+    {
+        [Display(Name = "utworzony")]
+        Created,
+
+        [Display(Name = "w ofercie")]
+        Visible,
+
+        [Display(Name = "wycofany")]
+        Deleted
     }
     
     public class Platform
@@ -89,7 +112,5 @@ namespace GameStore.Models
         public string HDD { get; set; }
         [Display(Name = "DirectX")]
         public string DirectX { get; set; }
-
-        public virtual Product Product { get; set; }
     }
 }

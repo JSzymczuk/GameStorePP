@@ -8,14 +8,38 @@ using System.Web;
 using System.Web.Mvc;
 using GameStore.Models;
 using GameStore.Helpers;
+using System.IO;
+using System.Drawing;
+using Microsoft.AspNet.Identity.Owin;
+using System.Threading.Tasks;
 
 namespace GameStore.Controllers
 {
     public class ProductController : Controller
     {
+        public const int ProductCoverThumbWidth = 64 * 3;
+        public const int ProductCoverThumbHeight = 64 * 4;
+
+        private ApplicationUserManager _userManager;
         private ApplicationDbContext db = new ApplicationDbContext();
+
+        public ProductController() { }
+
+        public ProductController(ApplicationUserManager userManager) { UserManager = userManager; }
         
-        public ActionResult Index()
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
+        public ActionResult Manage()
         {
             return RedirectToAction("Index", "Search");
         }
@@ -37,16 +61,20 @@ namespace GameStore.Controllers
                 Name = product.Name,
                 PlatformName = product.Platform.Name,
                 Studio = product.Studio,
-                CoverPath = product.CoverPath,
+                CoverPath = product.ThumbPath,
                 Description = product.Description,
                 Price = product.Price,
                 ReleaseDate = product.ReleaseDate,
                 Pegi = product.Pegi.ToList().OrderByDescending(p => p.Priority).ToList(),
                 MinimalRequirements = product.MinimumRequirements,
-                RecommendedRequirements = product.RecommendedRequirements
+                RecommendedRequirements = product.RecommendedRequirements,
+                State = product.State.GetDisplayName(),
+                AddedInfo = FormatStateUserDateChange(product.DateAdded, product.AddedBy),
+                EditedInfo = FormatStateUserDateChange(product.DateEdited, product.EditedBy),
+                DeletedInfo = FormatStateUserDateChange(product.DateDeleted, product.DeletedBy)
             });
         }
-        
+
         public ActionResult Create()
         {
             var pegiList = db.Pegi.OrderByDescending(p => p.Priority).ToList();
@@ -61,14 +89,17 @@ namespace GameStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ProductCreateViewModel product)
+        public async Task<ActionResult> Create(ProductCreateViewModel product, HttpPostedFileBase cover)
         {
             if (ModelState.IsValid)
-            {
+            {                
+                CoverUploadResult coverUploadResult = FileUpload(cover);
+
                 var pegiIds = product.GetPegiIds().ToList();
                 var pegi = db.Pegi.Where(p => pegiIds.Any(id => id == p.Id)).ToList();
                 Requirements minReqs = product.MinimalRequirements.IsAnyPropertySet() ? product.MinimalRequirements : null;
                 Requirements recReqs = product.RecommendedRequirements.IsAnyPropertySet() ? product.RecommendedRequirements : null;
+                string currentUserId = await GetCurrentUserId();
 
                 db.Products.Add(new Product
                 {
@@ -78,11 +109,12 @@ namespace GameStore.Controllers
                     Studio = product.Studio,
                     Price = product.Price,
                     ReleaseDate = product.ReleaseDate,
-                    CoverPath = product.CoverPath,
-                    ThumbPath = product.ThumbPath,
+                    CoverPath = coverUploadResult.Succeeded ? coverUploadResult.Cover : null,
+                    ThumbPath = coverUploadResult.Succeeded ? coverUploadResult.Thumb : null,
                     Pegi = pegi,
-                    IsVisible = true,
                     DateAdded = DateTime.Now,
+                    State = ProductState.Created,
+                    AddedById = currentUserId,
                     MinimumRequirements = minReqs,
                     RecommendedRequirements = recReqs,
                 });
@@ -120,85 +152,78 @@ namespace GameStore.Controllers
             return View(new ProductCreateViewModel
             {
                 Id = product.Id,
-                Name = product.Name, Price = product.Price,
-                DateAdded = product.DateAdded,
-                IsVisible = product.IsVisible,
+                Name = product.Name, Price = product.Price,                
                 ReleaseDate = product.ReleaseDate,
                 Studio = product.Studio,
                 Description = product.Description,
                 PlatformId = product.PlatformId,
                 MinimalRequirements = product.MinimumRequirements,
                 RecommendedRequirements = product.RecommendedRequirements,
-                PegiAgeId = productPegiContent.FirstOrDefault(p => p.IsAgeRating).Id,
+                PegiAgeId = productPegiContent.FirstOrDefault(p => p.IsAgeRating)?.Id ?? 0,
                 PegiContent = pegiContentList,
                 CoverPath = product.CoverPath, 
                 ThumbPath = product.ThumbPath
             });            
         }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ProductCreateViewModel product)
+        public async Task<ActionResult> Edit(ProductCreateViewModel productVM, HttpPostedFileBase cover)
         {
             if (ModelState.IsValid)
             {
-                var pegiIds = product.GetPegiIds().ToList();
-                var pegi = db.Pegi.Where(p => pegiIds.Any(id => id == p.Id)).ToList();
+                Product product = db.Products.Find(productVM.Id);
 
-                Requirements minReqs = product.MinimalRequirements.IsAnyPropertySet() ? product.MinimalRequirements : null;
-                Requirements recReqs = product.RecommendedRequirements.IsAnyPropertySet() ? product.RecommendedRequirements : null;
-
-                Product productModel = new Product
+                if (product != null)
                 {
-                    Id = product.Id,
-                    Name = product.Name,
-                    PlatformId = product.PlatformId,
-                    Description = product.Description,
-                    Studio = product.Studio,
-                    Price = product.Price,
-                    ReleaseDate = product.ReleaseDate,
-                    CoverPath = product.CoverPath,
-                    ThumbPath = product.ThumbPath,
-                    Pegi = pegi,
-                    IsVisible = true,
-                    DateAdded = DateTime.Now
-                };
-
-                if (product.MinimalRequirements != null && product.MinimalRequirements.Id != 0) // było coś już wcześniej
-                {
-                    if (minReqs != null)
+                    product.Name = productVM.Name;
+                    product.PlatformId = productVM.PlatformId;
+                    product.Description = productVM.Description;
+                    product.Studio = productVM.Studio;
+                    product.Price = productVM.Price;
+                    product.ReleaseDate = productVM.ReleaseDate;
+                    product.DateEdited = DateTime.Now;
+                    product.EditedById = await GetCurrentUserId();
+                    
+                    if (cover != null)
                     {
-                        db.Entry(minReqs).State = EntityState.Modified;
-                        productModel.MinimumRequirementsId = minReqs.Id;
-                        productModel.MinimumRequirements = minReqs;
-                        minReqs.Product = productModel;
+                        var coverUploadResult = FileUpload(cover);
+                        if (coverUploadResult.Succeeded)
+                        {
+                            product.CoverPath = coverUploadResult.Cover;
+                            product.ThumbPath = coverUploadResult.Thumb;
+                        }
                     }
-                    else
+                    else if (productVM.DeleteCover)
                     {
-                        Requirements reqs = db.Requirements.Find(minReqs.Id);
-                        db.Requirements.Remove(reqs);
-                        productModel.MinimumRequirementsId = null;
-                        productModel.MinimumRequirements = null;
+                        product.CoverPath = null;
+                        product.ThumbPath = null;
                     }
-                }
-                else if (minReqs != null)
-                {
-                    minReqs.Product = productModel;
-                    productModel.MinimumRequirements = minReqs;
-                }
 
-                db.Entry(productModel).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                    Requirements newMinReqs = productVM.MinimalRequirements.IsAnyPropertySet() ? productVM.MinimalRequirements : null;
+                    UpdateRequirements(product, newMinReqs, true);
+
+                    Requirements newRecReqs = productVM.RecommendedRequirements.IsAnyPropertySet() ? productVM.RecommendedRequirements : null;
+                    UpdateRequirements(product, newRecReqs, false);
+
+                    var pegiIds = productVM.GetPegiIds().ToList();
+                    var pegi = db.Pegi.Where(p => pegiIds.Any(id => id == p.Id)).ToList();
+                    product.Pegi.Clear();
+                    foreach (var pg in pegi) { product.Pegi.Add(pg); }
+
+                    db.Entry(product).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Manage");
+                }
             }
 
             var pegiList = db.Pegi.OrderByDescending(p => p.Priority).ToList();
             ViewBag.PegiAge = pegiList.Where(p => p.IsAgeRating);
-            ViewBag.PlatformId = new SelectList(db.Platforms, "Id", "Name", product.PlatformId);
-            return View(product);            
+            ViewBag.PlatformId = new SelectList(db.Platforms, "Id", "Name", productVM.PlatformId);
+            return View(productVM);            
         }
         
-        public ActionResult Delete(int? id)
+        public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -209,17 +234,23 @@ namespace GameStore.Controllers
             {
                 return HttpNotFound();
             }
-            return View(product);
+            else
+            {
+                product.DeletedById = await GetCurrentUserId();
+                product.DateDeleted = DateTime.Now;
+                product.State = ProductState.Deleted;
+                db.SaveChanges();
+            }
+            return RedirectToAction("Manage");
         }
         
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult ConfirmAll()
         {
-            Product product = db.Products.Find(id);
-            db.Products.Remove(product);
+            var some = db.Products.Where(p => p.State == ProductState.Created).ToList();
+            some.ForEach(p => p.State = ProductState.Visible);
             db.SaveChanges();
-            return RedirectToAction("Index");
+
+            return RedirectToAction("Manage");
         }
 
         protected override void Dispose(bool disposing)
@@ -229,6 +260,100 @@ namespace GameStore.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private struct CoverUploadResult
+        {
+            public bool Succeeded { get; set; }
+            public string Cover { get; set; }
+            public string Thumb { get; set; }
+        }
+        
+        private string FormatStateUserDateChange(DateTime? date, AppUser user)
+        {
+            return date.HasValue ? date.Value.ToString("HH:mm:ss ")
+                + date.Value.ToDisplayableDate() + " przez "
+                + (user != null ? user.UserName : "niezalogowanego użytkownika")
+                : string.Empty;
+        }
+
+        private async Task<string> GetCurrentUserId()
+        {
+            var currentUser = await UserManager.FindByNameAsync(User.Identity.Name);
+            return currentUser != null ? currentUser.Id : null;
+        }
+
+        private CoverUploadResult FileUpload(HttpPostedFileBase file)
+        {
+            if (file != null) { return FileUpload(file, file.FileName); }
+            return new CoverUploadResult { Succeeded = false };
+        }
+
+        private CoverUploadResult FileUpload(HttpPostedFileBase file, string fileName)
+        {
+            CoverUploadResult result = new CoverUploadResult();
+            try
+            {
+                string coverName = "Covers/" + fileName;
+                string thumbName = "Covers/Thumbs/" + fileName;
+                string fullName = Path.Combine(Server.MapPath("~/Images"), coverName);
+                file.SaveAs(fullName);
+                Image image = Image.FromFile(fullName);
+                Image thumb = image.GetThumbnailImage(
+                    ProductCoverThumbWidth, 
+                    ProductCoverThumbHeight, 
+                    () => false, IntPtr.Zero);
+                fullName = Path.Combine(Server.MapPath("~/Images"), thumbName);
+                thumb.Save(fullName);
+                result.Cover = coverName;
+                result.Thumb = thumbName;
+                result.Succeeded = true;
+            }
+            catch (Exception)
+            {
+                result.Succeeded = false;
+            }
+            return result;
+        }
+
+        private void UpdateRequirements(Product product, Requirements newReqs, bool minReqs)
+        {
+            Requirements reqs = db.Requirements.Find(minReqs ?
+                product.MinimumRequirementsId
+                : product.RecommendedRequirementsId);
+
+            if (reqs != null)
+            {
+                // Było wcześniej.
+                if (newReqs != null)
+                {
+                    // I jest nadal. Ale inne. Zaktualizować.
+                    reqs.OS = newReqs.OS;
+                    reqs.CPU = newReqs.CPU;
+                    reqs.GPU = newReqs.GPU;
+                    reqs.RAM = newReqs.RAM;
+                    reqs.HDD = newReqs.HDD;
+                    reqs.DirectX = newReqs.DirectX;
+                    db.Entry(reqs).State = EntityState.Modified;
+                }
+                else
+                {
+                    // Ale nie ma. Kasujemy.
+                    db.Requirements.Remove(reqs);
+                    if (minReqs)
+                    { product.MinimumRequirementsId = null; }
+                    else
+                    { product.RecommendedRequirementsId = null; }
+                }
+            }
+            else if (newReqs != null)
+            {
+                // Nie było i jest nowe.
+                if (minReqs)
+                { product.MinimumRequirements = newReqs; }
+                else
+                { product.RecommendedRequirements = newReqs; }
+            }
         }
     }
 }

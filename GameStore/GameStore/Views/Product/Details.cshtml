@@ -3,117 +3,153 @@
 
 @{
     ViewBag.Title = Model.Name;
+    bool IsAdministrator = User.IsInRole("Administrator");
 }
 
 <h2>@ViewBag.Title</h2>
 
 <div>
+
     <h4>Informacje o produkcie</h4>
+    @if (IsAdministrator)
+    {
+        @Html.ActionLink("Edycja", "Edit", "Product", new { id = Model.Id }, new { })
+    }
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+    <div class="overflow-hidden">
+        @if (!string.IsNullOrWhiteSpace(Model.CoverPath))
+        {
+            <img src="~/Images/@Model.CoverPath" class="left"/>
+        }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PlatformName)
-        </dt>
+        <dl class="dl-horizontal left">
 
-        <dd>
-            @Html.DisplayFor(model => model.PlatformName)
-        </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Studio)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Studio)
-        </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.PlatformName)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.ReleaseDate)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.PlatformName)
+            </dd>
 
-        <dd>
-            @if (Model.ReleaseDate.HasValue)
+            <dt>
+                @Html.DisplayNameFor(model => model.Studio)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Studio)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ReleaseDate)
+            </dt>
+
+            <dd>
+                @if (Model.ReleaseDate.HasValue)
             {
-                @Model.ReleaseDate.Value.ToDisplayableDate()
-            }
-            else
-            {
-                @Html.Encode("nieznana")
-            }
-        </dd>
+                    @Model.ReleaseDate.Value.ToDisplayableDate()
+                }
+                else
+                {
+                    @Html.Encode("nieznana")
+                }
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
 
-        <dd>
-            @string.Format("{0:N2}zł", Model.Price)
-        </dd>
+            <dd>
+                @string.Format("{0:N2}zł", Model.Price)
+            </dd>
+        </dl>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CoverPath)
-        </dt>
+    <dl class="dl-horizontal clear">
 
-        <dd>
-            @Html.DisplayFor(model => model.CoverPath)
-        </dd>
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+        }
         
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        
-        <dt>
-            @Html.DisplayNameFor(model => model.MinimalRequirements)
-        </dt>
-        <dd>
-            @if (Model.MinimalRequirements != null)
-            {
+        @if (Model.MinimalRequirements != null)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.MinimalRequirements)
+            </dt>
+            <dd>
                 @Html.Partial("_RequirementsDetails", Model.MinimalRequirements)
-            }
-            else
-            {
-                @Html.Encode("nieokreślone")
-            }
-        </dd>
+            </dd>
+        }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.RecommendedRequirements)
-        </dt>
-        <dd>
-            @if (Model.RecommendedRequirements != null)
-            {
-                @Html.Partial("_RequirementsDetails", Model.RecommendedRequirements)
-            }
-            else
-            {
-                @Html.Encode("nieokreślone")
-            }
-        </dd>
-        
-        <dt>
-            @Html.DisplayNameFor(model => model.Pegi)
-        </dt>
-        <dd>
-            @foreach (var pegi in Model.Pegi)
-            {
-                <img src="../../Images/@pegi.IconPath" title="@pegi.Description" class="pegi-icon">
-            }
-        </dd>
+        @if (Model.RecommendedRequirements != null)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.RecommendedRequirements)
+            </dt>
+            <dd>
+                @Html.Partial("_RequirementsDetails", Model.RecommendedRequirements)                    
+            </dd>
+        }
+
+        @if (Model.Pegi.Count > 0)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.Pegi)
+            </dt>
+            <dd>
+                @foreach (var pegi in Model.Pegi)
+                {
+                    <img src="../../Images/@pegi.IconPath" title="@pegi.Description" class="pegi-icon">
+                }
+            </dd>
+        }   
+
+        @if (IsAdministrator)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.State)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.State)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.AddedInfo)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.AddedInfo)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.EditedInfo)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.EditedInfo)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.DeletedInfo)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.DeletedInfo)
+            </dd>
+        }
 
     </dl>
 </div>
+
 <p>
     @Html.ActionLink("Powrót", "Index", "Search")
 </p>

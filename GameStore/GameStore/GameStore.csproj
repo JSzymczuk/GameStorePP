@@ -235,6 +235,10 @@
     <Compile Include="Migrations\201706030222370_2017-06-03-7.Designer.cs">
       <DependentUpon>201706030222370_2017-06-03-7.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706041356191_2017-06-04-0.cs" />
+    <Compile Include="Migrations\201706041356191_2017-06-04-0.Designer.cs">
+      <DependentUpon>201706041356191_2017-06-04-0.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\OrderModels.cs" />
     <Compile Include="Models\ProductModels.cs" />
@@ -320,16 +324,14 @@
     <Content Include="Views\OrderStatus\Index.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Product\Create.cshtml" />
-    <Content Include="Views\Product\Delete.cshtml" />
     <Content Include="Views\Product\Details.cshtml" />
     <Content Include="Views\Product\Edit.cshtml" />
-    <Content Include="Views\Product\Index.cshtml" />
     <Content Include="Views\Product\_RequirementsEdit.cshtml" />
     <Content Include="Views\Product\_Requirements.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Images\" />
+    <Folder Include="Images\Covers\Thumbs\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -370,6 +372,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706030222370_2017-06-03-7.resx">
       <DependentUpon>201706030222370_2017-06-03-7.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706041356191_2017-06-04-0.resx">
+      <DependentUpon>201706041356191_2017-06-04-0.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

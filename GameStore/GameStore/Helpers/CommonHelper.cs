@@ -1,13 +1,26 @@
 ﻿using GameStore.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Web;
+using System.Web.Mvc;
 
 namespace GameStore.Helpers
 {
     public static class ExtensionMethods
     {
+        public static string GetDisplayName(this Enum enumValue)
+        {
+            return enumValue.GetType().GetMember(enumValue.ToString())
+                           .First()
+                           .GetCustomAttribute<DisplayAttribute>()
+                           .GetName();
+        }
+
         public static string ToDisplayableDate(this DateTime date)
         {
             string month;
@@ -46,6 +59,17 @@ namespace GameStore.Helpers
                 && string.IsNullOrWhiteSpace(reqs.HDD)
                 && string.IsNullOrWhiteSpace(reqs.RAM)
                 && string.IsNullOrWhiteSpace(reqs.DirectX));
+        }
+
+        public static List<int> GetPegiIds(this ProductCreateViewModel model)
+        {
+            List<int> result = new List<int> { model.PegiAgeId };
+            foreach (var pegi in model.PegiContent)
+            {
+                if (pegi.Checked)
+                { result.Add(pegi.Id); }
+            }
+            return result;
         }
     }
 }

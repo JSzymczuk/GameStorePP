@@ -32,14 +32,11 @@ namespace GameStore.Models
     {
         [Key]
         public int Id { get; set; }
-        
-        [Display(Name = "Widoczne?")]
-        public bool IsVisible { get; set; }
-        [Display(Name = "Data dodania")]
-        public DateTime? DateAdded { get; set; }
-        
+
         public string CoverPath { get; set; }        
         public string ThumbPath { get; set; }
+        [Display(Name = "Usunąć okładkę?")]
+        public bool DeleteCover { get; set; }
 
         [Required]
         [Display(Name = "Nazwa")]
@@ -61,23 +58,14 @@ namespace GameStore.Models
         [Display(Name = "PEGI")]
         public int PegiAgeId { get; set; }
         public List<PegiInfo> PegiContent { get; set; }
+        
+        public virtual Platform Platform { get; set; }
 
         [Display(Name = "Minimalne wymagania sprzętowe")]
         public Requirements MinimalRequirements { get; set; }
         [Display(Name = "Zalecane wymagania sprzętowe")]
         public Requirements RecommendedRequirements { get; set; }
-
-
-        public List<int> GetPegiIds()
-        {
-            List<int> result = new List<int> { PegiAgeId };
-            foreach (var pegi in PegiContent)
-            {
-                if (pegi.Checked)
-                { result.Add(pegi.Id); }
-            }
-            return result;
-        }
+        
     }
 
     public class ProductDetailsViewModel
@@ -114,6 +102,18 @@ namespace GameStore.Models
 
         [Display(Name = "Zalecane wymagania sprzętowe")]
         public Requirements RecommendedRequirements { get; set; }
+
+        [Display(Name = "Stan")]
+        public string State { get; set; }
+
+        [Display(Name = "Dodano")]
+        public string AddedInfo { get; set; }
+
+        [Display(Name = "Edytowano")]
+        public string EditedInfo { get; set; }
+
+        [Display(Name = "Usunieto")]
+        public string DeletedInfo { get; set; }
 
     }
 

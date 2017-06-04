@@ -9,7 +9,14 @@
 <div class="form-group">
     @Html.LabelFor(model => model.OS, htmlAttributes: new { @class = "control-label col-md-2" })
     <div class="col-md-10">
-        @Html.Editor(prefix + "OS", Model.OS, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.Editor(prefix + "OS", Model.OS, new
+        {
+            htmlAttributes = new
+            {
+                @class = "form-control",
+                @Value = Model.OS
+            }
+        })
         @Html.ValidationMessageFor(model => model.OS, "", new { @class = "text-danger" })
     </div>
 </div>
@@ -17,7 +24,14 @@
 <div class="form-group">
     @Html.LabelFor(model => model.CPU, htmlAttributes: new { @class = "control-label col-md-2" })
     <div class="col-md-10">
-        @Html.Editor(prefix + "CPU", Model.CPU, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.Editor(prefix + "CPU", Model.CPU, new
+        {
+            htmlAttributes = new
+            {
+                @class = "form-control",
+                @Value = Model.CPU
+            }
+        })
         @Html.ValidationMessageFor(model => model.CPU, "", new { @class = "text-danger" })
     </div>
 </div>
@@ -25,7 +39,14 @@
 <div class="form-group">
     @Html.LabelFor(model => model.GPU, htmlAttributes: new { @class = "control-label col-md-2" })
     <div class="col-md-10">
-        @Html.Editor(prefix + "GPU", Model.GPU, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.Editor(prefix + "GPU", Model.GPU, new
+        {
+            htmlAttributes = new
+            {
+                @class = "form-control",
+                @Value = Model.GPU
+            }
+        })
         @Html.ValidationMessageFor(model => model.GPU, "", new { @class = "text-danger" })
     </div>
 </div>
@@ -33,7 +54,14 @@
 <div class="form-group">
     @Html.LabelFor(model => model.RAM, htmlAttributes: new { @class = "control-label col-md-2" })
     <div class="col-md-10">
-        @Html.Editor(prefix + "RAM", Model.RAM, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.Editor(prefix + "RAM", Model.RAM, new
+        {
+            htmlAttributes = new
+            {
+                @class = "form-control",
+                @Value = Model.RAM
+            }
+        })
         @Html.ValidationMessageFor(model => model.RAM, "", new { @class = "text-danger" })
     </div>
 </div>
@@ -41,7 +69,14 @@
 <div class="form-group">
     @Html.LabelFor(model => model.HDD, htmlAttributes: new { @class = "control-label col-md-2" })
     <div class="col-md-10">
-        @Html.Editor(prefix + "HDD", Model.HDD, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.Editor(prefix + "HDD", Model.HDD, new
+        {
+            htmlAttributes = new
+            {
+                @class = "form-control",
+                @Value = Model.HDD
+            }
+        })
         @Html.ValidationMessageFor(model => model.HDD, "", new { @class = "text-danger" })
     </div>
 </div>
@@ -49,7 +84,14 @@
 <div class="form-group">
     @Html.LabelFor(model => model.DirectX, htmlAttributes: new { @class = "control-label col-md-2" })
     <div class="col-md-10">
-        @Html.Editor(prefix + "DirectX", Model.DirectX, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.Editor(prefix + "DirectX", Model.DirectX, new
+        {
+            htmlAttributes = new
+            {
+                @class = "form-control",
+                @Value = Model.DirectX
+            }
+        })
         @Html.ValidationMessageFor(model => model.DirectX, "", new { @class = "text-danger" })
     </div>
 </div>

@@ -1,40 +1,40 @@
 ﻿@model GameStore.Models.Requirements
 
 <ul class="requirements-list">
-    @if (!string.IsNullOrEmpty(Model.OS))
+    @if (!string.IsNullOrWhiteSpace(Model.OS))
     {
         <li>
-            @Html.DisplayNameFor(model => model.OS): @Html.DisplayFor(model => model.OS);
+            @Html.DisplayNameFor(model => model.OS): @Html.DisplayFor(model => model.OS)
         </li>
     }
-    @if (!string.IsNullOrEmpty(Model.CPU))
+    @if (!string.IsNullOrWhiteSpace(Model.CPU))
     {
         <li>
-            @Html.DisplayNameFor(model => model.CPU): @Html.DisplayFor(model => model.CPU);
+            @Html.DisplayNameFor(model => model.CPU): @Html.DisplayFor(model => model.CPU)
         </li>
     }
-    @if (!string.IsNullOrEmpty(Model.GPU))
+    @if (!string.IsNullOrWhiteSpace(Model.GPU))
     {
         <li>
-            @Html.DisplayNameFor(model => model.GPU): @Html.DisplayFor(model => model.GPU);
+            @Html.DisplayNameFor(model => model.GPU): @Html.DisplayFor(model => model.GPU)
         </li>
     }
-    @if (!string.IsNullOrEmpty(Model.RAM))
+    @if (!string.IsNullOrWhiteSpace(Model.RAM))
     {
         <li>
-            @Html.DisplayNameFor(model => model.RAM): @Html.DisplayFor(model => model.RAM);
+            @Html.DisplayNameFor(model => model.RAM): @Html.DisplayFor(model => model.RAM)
         </li>
     }
-    @if (!string.IsNullOrEmpty(Model.OS))
+    @if (!string.IsNullOrWhiteSpace(Model.HDD))
     {
         <li>
-            @Html.DisplayNameFor(model => model.HDD): @Html.DisplayFor(model => model.HDD);
+            @Html.DisplayNameFor(model => model.HDD): @Html.DisplayFor(model => model.HDD)
         </li>
     }
-    @if (!string.IsNullOrEmpty(Model.DirectX))
+    @if (!string.IsNullOrWhiteSpace(Model.DirectX))
     {
         <li>
-            @Html.DisplayFor(model => model.DirectX);
+            @Html.DisplayFor(model => model.DirectX)
         </li>
     }
 </ul>

@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<GameStore.Models.Product>
+@using GameStore.Helpers
 
 @{
     ViewBag.Title = "Zarządzaj produktami";
@@ -21,7 +22,8 @@
 </p>
 
 <p>
-    @Html.ActionLink("Dodaj nowy produkt", "Create", "Product")
+    @Html.ActionLink("Dodaj nowy produkt", "Create", "Product") | 
+    @Html.ActionLink("Zatwierdź wszystkie", "ConfirmAll", "Product")
 </p>
 
 @if (ViewBag.MaxPages > 0)
@@ -46,7 +48,7 @@
                 @Html.DisplayNameFor(model => model.Platform.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateAdded)
+                @Html.DisplayNameFor(model => model.State)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Price)
@@ -59,9 +61,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsVisible)
             </th>
             <th></th>
         </tr>
@@ -77,7 +76,7 @@
                 @Html.DisplayFor(modelItem => item.Platform.Name)
             </td>
             <td>
-                @item.DateAdded.ToString("dd.MM.yyyy")
+                @item.State.GetDisplayName()
             </td>
             <td>
                 @string.Format("{0:N2}zł", item.Price)
@@ -99,12 +98,12 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsVisible)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", "Product", new { id = item.Id }, new { }) |
-                @Html.ActionLink("Details", "Details", "Product", new { id = item.Id }, new { }) |
-                @Html.ActionLink("Delete", "Delete", "Product", new { id = item.Id }, new { })
+                @Html.ActionLink("Details", "Details", "Product", new { id = item.Id }, new { @class = "icon-link icon-link-details" })
+                @if (item.State != GameStore.Models.ProductState.Deleted)
+                {
+                    @Html.ActionLink("Edit", "Edit", "Product", new { id = item.Id }, new { @class = "icon-link icon-link-edit" })
+                    @Html.ActionLink("Delete", "Delete", "Product", new { id = item.Id }, new { @class = "icon-link icon-link-delete" })
+                }                
             </td>
         </tr>
     }
