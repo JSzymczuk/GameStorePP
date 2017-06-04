@@ -144,6 +144,7 @@ namespace GameStore.Controllers
             {
                 var pegiIds = product.GetPegiIds().ToList();
                 var pegi = db.Pegi.Where(p => pegiIds.Any(id => id == p.Id)).ToList();
+
                 Requirements minReqs = product.MinimalRequirements.IsAnyPropertySet() ? product.MinimalRequirements : null;
                 Requirements recReqs = product.RecommendedRequirements.IsAnyPropertySet() ? product.RecommendedRequirements : null;
 
@@ -160,10 +161,31 @@ namespace GameStore.Controllers
                     ThumbPath = product.ThumbPath,
                     Pegi = pegi,
                     IsVisible = true,
-                    DateAdded = DateTime.Now,
-                    MinimumRequirements = minReqs,
-                    RecommendedRequirements = recReqs
+                    DateAdded = DateTime.Now
                 };
+
+                if (product.MinimalRequirements != null && product.MinimalRequirements.Id != 0) // było coś już wcześniej
+                {
+                    if (minReqs != null)
+                    {
+                        db.Entry(minReqs).State = EntityState.Modified;
+                        productModel.MinimumRequirementsId = minReqs.Id;
+                        productModel.MinimumRequirements = minReqs;
+                        minReqs.Product = productModel;
+                    }
+                    else
+                    {
+                        Requirements reqs = db.Requirements.Find(minReqs.Id);
+                        db.Requirements.Remove(reqs);
+                        productModel.MinimumRequirementsId = null;
+                        productModel.MinimumRequirements = null;
+                    }
+                }
+                else if (minReqs != null)
+                {
+                    minReqs.Product = productModel;
+                    productModel.MinimumRequirements = minReqs;
+                }
 
                 db.Entry(productModel).State = EntityState.Modified;
                 db.SaveChanges();

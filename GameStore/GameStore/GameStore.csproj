@@ -312,10 +312,7 @@
     <Content Include="Views\Platforms\Details.cshtml" />
     <Content Include="Views\Platforms\Edit.cshtml" />
     <Content Include="Views\Platforms\Index.cshtml" />
-    <Content Include="Views\Requirements\Create.cshtml" />
-    <Content Include="Views\Requirements\Delete.cshtml" />
     <Content Include="Views\Product\_RequirementsDetails.cshtml" />
-    <Content Include="Views\Requirements\Edit.cshtml" />
     <Content Include="Views\OrderStatus\Create.cshtml" />
     <Content Include="Views\OrderStatus\Delete.cshtml" />
     <Content Include="Views\OrderStatus\Details.cshtml" />
