@@ -106,6 +106,9 @@ namespace GameStore.Models
         [Display(Name = "Stan")]
         public string State { get; set; }
 
+        [Display(Name = "Sztuk w magazynie")]
+        public int Quantity { get; set; }
+
         [Display(Name = "Dodano")]
         public string AddedInfo { get; set; }
 
@@ -116,5 +119,4 @@ namespace GameStore.Models
         public string DeletedInfo { get; set; }
 
     }
-
 }

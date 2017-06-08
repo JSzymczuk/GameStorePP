@@ -1,0 +1,36 @@
+﻿@model GameStore.Models.Product
+
+@{ 
+    string platformName = Model.Platform.Name;
+    string platformClass = platformName.Contains("Xbox") ? "platform platform-xbox"
+        : platformName.Contains("Playstation") ? "platform platform-ps" : "platform";
+}
+
+<a class="product-box" href="@Url.Action("Details", "Product", new { id = Model.Id })">
+    <div>
+        @if (!string.IsNullOrWhiteSpace(Model.ThumbPath))
+        {
+            <img src="~/Images/@Model.ThumbPath" class="cover" alt="Okładka" />
+        }
+        <span class="@platformClass">@Model.Platform.ShortName</span>
+        @if (Model.Quantity <= 0)
+        {
+            <span class="unavailable">Produkt niedostępny</span>
+        }
+    </div>    
+    <div class="info">
+        @if (Model.Price.HasValue)
+        {
+            <span class="price">
+                @Math.Floor(Model.Price.Value)
+                <span>
+                    <span>
+                        @Html.Raw(((int)((Model.Price.Value % 1) * 100)).ToString("D2"))
+                    </span>
+                    <span>PLN</span>
+                </span>
+            </span>
+        }
+        <span>@Model.Name</span>
+    </div>
+</a>

@@ -7,6 +7,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using GameStore.Models;
+using System.Data.Entity;
+using System.Net;
+using System.Collections.Generic;
 
 namespace GameStore.Controllers
 {
@@ -15,10 +18,9 @@ namespace GameStore.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext db = new ApplicationDbContext();
 
-        public ManageController()
-        {
-        }
+        public ManageController() { }
 
         public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
@@ -322,6 +324,87 @@ namespace GameStore.Controllers
             return result.Succeeded ? RedirectToAction("ManageLogins") : RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
         }
 
+        public async Task<ActionResult> MyAddresses()
+        {
+            var currentUser = await GetCurrentUser();
+            if (currentUser == null)
+            { return View(new List<Address> { }); }
+
+            string currentUserId = currentUser.Id;
+            var addresses = db.Addresses.Where(a => a.UserId == currentUserId && !a.IsDeleted);
+            ViewBag.DefaultAddressId = currentUser.DefaultAddressId;
+            return View(addresses.ToList());
+        }
+
+        public ActionResult AddAddress()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddAddress(Address address)
+        {
+            var user = await GetCurrentUser();
+            if (ModelState.IsValid && user != null)
+            {
+                address.UserId = user.Id;
+                address.IsDeleted = false;
+                db.Addresses.Add(address);
+                db.SaveChanges();
+                return RedirectToAction("MyAddresses");
+            }
+            return View(address);
+        }
+
+        public ActionResult SetDefaultAddress(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Address address = db.Addresses.Find(id);
+            if (address == null)
+            {
+                return HttpNotFound();
+            }
+
+            var user = address.User;
+            if (user != null)
+            {
+                user.DefaultAddressId = address.Id;
+                db.Entry(user).State = EntityState.Modified;
+            }
+            db.SaveChanges();
+
+            return RedirectToAction("MyAddresses");
+        }
+
+        public ActionResult RemoveAddress(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Address address = db.Addresses.Find(id);
+            if (address == null)
+            {
+                return HttpNotFound();
+            }
+
+            address.IsDeleted = true;
+            db.Entry(address).State = EntityState.Modified;
+            var user = address.User;
+            if (user != null && user.DefaultAddressId == address.Id)
+            {
+                user.DefaultAddressId = null;
+                db.Entry(user).State = EntityState.Modified;
+            }
+            db.SaveChanges();
+
+            return RedirectToAction("MyAddresses");
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing && _userManager != null)
@@ -333,7 +416,12 @@ namespace GameStore.Controllers
             base.Dispose(disposing);
         }
 
-#region Helpers
+        private async Task<AppUser> GetCurrentUser()
+        {
+            return await UserManager.FindByNameAsync(User.Identity.Name);
+        }
+
+        #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 

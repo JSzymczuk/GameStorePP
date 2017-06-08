@@ -6,6 +6,10 @@
     @Html.AntiForgeryToken()
 
     <ul class="nav navbar-nav navbar-right">
+        <li class="icon-link" id="cart-icon">
+            @Html.ActionLink("Cart", "Index", "Cart")
+            @Html.Partial("_CartItems")
+        </li>
         <li>
             @Html.ActionLink("Witaj, " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
         </li>

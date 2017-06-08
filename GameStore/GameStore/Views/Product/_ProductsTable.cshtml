@@ -1,0 +1,122 @@
+﻿@model IEnumerable<GameStore.Models.Product>
+@using GameStore.Helpers
+
+<table class="table products-table">
+    <tr>
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Platform.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Studio)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ReleaseDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            Pozostało
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.State)
+        </th>
+        <th></th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr class="@Html.Encode(item.State == GameStore.Models.ProductState.Deleted ? "deleted-product" : string.Empty)">
+            <td></td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td class="center-align">
+                @Html.DisplayFor(modelItem => item.Platform.Name)
+            </td>
+            <td class="center-align">
+                @Html.DisplayFor(modelItem => item.Studio)
+            </td>
+            <td class="center-align">
+                @if (item.ReleaseDate.HasValue)
+                {
+                    @item.ReleaseDate.Value.ToString("dd.MM.yyyy")
+                }
+                else
+                {
+                    @Html.Encode("nieznana")
+                }
+            </td>
+            <td class="right-align">
+                @string.Format("{0:N2}zł", item.Price)
+            </td>
+            <td class="center-align">
+                @if (item.Quantity == 0 && item.State != GameStore.Models.ProductState.Deleted)
+                {
+                    <span class="red bold">@item.Quantity</span>
+                }
+                else
+                {
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                }
+            </td>
+            <td class="center-align">
+                @item.State.GetDisplayName()
+            </td>
+            <td>
+                @if (item.State != GameStore.Models.ProductState.Deleted)
+                {
+                    @Html.ActionLink("-", "ChangeQuantity", "Product", new { id = item.Id }, new { @class = "icon-link icon-link-decrease quantity-link", @type = "decrease", @productid = item.Id })
+                    <input id="@string.Format("quantity-change-box-{0}", item.Id)" class="quantity-change-box" type="number" min="0" value="0" />
+                    @Html.ActionLink("+", "ChangeQuantity", "Product", new { id = item.Id }, new { @class = "icon-link icon-link-increase quantity-link", @type = "increase", @productid = item.Id })
+                }                
+            </td>
+            <td>
+                @if (item.State == GameStore.Models.ProductState.Created)
+                {
+                    @Ajax.ActionLink("Confirm", "Confirm", "Product", new { id = item.Id },
+                       new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "products-table", InsertionMode= InsertionMode.Replace },
+                       new { @class = "icon-link icon-link-confirm", @title = "Dodaj do oferty" })
+                }
+                else
+                {
+                    <span class="unavailable-link-fill"></span>
+                }
+                @Html.ActionLink("Details", "Details", "Product", new { id = item.Id }, new { @class = "icon-link icon-link-details", @title = "Szczegóły" })
+                @if (item.State != GameStore.Models.ProductState.Deleted)
+                {
+                    @Html.ActionLink("Edit", "Edit", "Product", new { id = item.Id }, new { @class = "icon-link icon-link-edit", @title = "Edytuj" })
+                    @Html.ActionLink("Delete", "Delete", "Product", new { id = item.Id }, new { @class = "icon-link icon-link-delete", @title = "Usuń" })
+                }
+            </td>
+        </tr>
+    }
+
+</table>
+
+<script>
+    $(".quantity-link").on("click", function (e) {
+        e.preventDefault();
+        var productid = $(this).attr("productid");
+        var q = ($(this).attr("type") == "decrease" ? -1 : 1)
+            * $("#quantity-change-box-" + productid).val();
+        if (q != 0) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ChangeQuantity", "Product")',
+                data: {
+                    id: productid,
+                    quantity: q
+                },
+                complete: function (res) {
+                    $("#products-table").html(res.responseText);
+                }
+            });
+        }
+    });
+</script>

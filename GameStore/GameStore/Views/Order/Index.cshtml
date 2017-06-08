@@ -1,0 +1,84 @@
+﻿@model IEnumerable<GameStore.Models.OrderListItemViewModel>
+
+@{
+    ViewBag.Title = "Twoje zamówienia";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div id="orders-table">
+    <table class="table">
+        <tr>
+            <th>
+                Zamówienie
+            </th>
+            <th>
+                Adres dostawy
+            </th>
+            <th>
+                Data zgłoszenia
+            </th>
+            <th>
+                Stan zamówienia
+            </th>
+            <th>
+                Wartość
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink("Zamówienie nr: " + order.Id.ToString(), "Details", new { id = order.Id })
+                    <ul>
+                        @foreach (var item in order.Positions)
+                        {
+                            <li>@item.Quantity &times; @item.Product.Name (@item.Product.Platform.ShortName)</li>
+                        }
+                    </ul>
+                </td>
+
+                <td>@order.Address</td>
+
+                <td>@order.DateCreated</td>
+
+                <td class="center-align">@order.Status</td>
+
+                <td>
+                    @{ decimal price = order.Price; }
+                    <span class="price">
+                        @Math.Floor(price)
+                        <span>
+                            <span>
+                                @Html.Raw(((int)((price % 1) * 100)).ToString("D2"))
+                            </span>
+                            <span>PLN</span>
+                        </span>
+                    </span>
+                </td>
+
+                <td>
+                    @if (order.CanBeCancelled)
+                    {
+                        @Ajax.ActionLink("Anuluj", "Cancel",
+                        new { @id = order.Id },
+                        new AjaxOptions
+                        {
+                            HttpMethod = "GET",
+                            OnComplete = "refreshAll"
+                        },
+                        new { @class = "icon-link icon-link-delete", @title = "Anuluj zamówienie" })
+                    }
+                </td>
+            </tr>
+         }
+    </table>
+
+    <script>
+        function refreshAll(result) {
+            $("#orders-table").html($("#orders-table", result.responseText).html());
+        }
+    </script>
+</div>

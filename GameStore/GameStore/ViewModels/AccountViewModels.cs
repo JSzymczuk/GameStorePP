@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GameStore.Helpers;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GameStore.Models
@@ -119,5 +120,20 @@ namespace GameStore.Models
         [EmailAddress]
         [Display(Name = "Adres e-mail podany przy rejestracji:")]
         public string Email { get; set; }
+    }
+
+    public class AddressSelectionViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        public static AddressSelectionViewModel FromAddress(Address address)
+        {
+            return new AddressSelectionViewModel
+            {
+                Id = address.Id,
+                Name = address.ToDisplayableAddress()
+            };
+        }
     }
 }

@@ -1,0 +1,136 @@
+﻿@model GameStore.Models.Cart
+
+@{
+    ViewBag.Title = "Twój koszyk";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div id="cart-content">
+
+    @if (!Model.IsEmpty)
+    {
+        <table class="table products-table">
+            <tr>
+                <th style="width: 60px; text-align: right;">
+                    Lp.
+                </th>
+                <th colspan="2">
+                    Produkt
+                </th>
+                <th style="width: 139px">
+                    Liczba sztuk
+                </th>
+                <th style="width: 110px">
+                    Cena
+                </th>
+                <th style="width: 50px"></th>
+            </tr>
+
+            @{ int i = 1; }
+            @foreach (var item in Model)
+            {
+                int productId = item.Product.Id;
+                <tr>
+                    <td class="right-align">
+                        @i.ToString()
+                        @{ ++i; }
+                    </td>
+
+                    <td style="width: 144px">
+                        @if (!string.IsNullOrWhiteSpace(item.Product.ThumbPath))
+                    {
+                            <img src="~/Images/@item.Product.ThumbPath" style="width: 128px" />
+                        }
+                    </td>
+
+                    <td class="left-align">
+                        @Html.ActionLink(string.Format("{0} ({1})", item.Product.Name, (item.Product.Platform.ShortName)), "Details", "Product", new { id = productId }, new { @class = "product-title" })
+                    </td>
+
+                    <td>
+                        @Ajax.ActionLink("-", "ChangeProductQuantity",
+                           new { @productId = productId, quantity = -1 },
+                           new AjaxOptions
+                           {
+                               HttpMethod = "Post",
+                               OnComplete = "refreshAll"
+                           },
+                           new { @class = "icon-link icon-link-decrease quantity-link", @title = "Odejmij produkt" })
+
+                        <span id="@string.Format("quantity-change-box-{0}", productId)" class="quantity-change-box">
+                            @item.Quantity
+                        </span>
+
+                        @Ajax.ActionLink("+", "ChangeProductQuantity",
+                           new { @productId = productId, quantity = 1 },
+                           new AjaxOptions
+                           {
+                               HttpMethod = "Post",
+                               OnComplete = "refreshAll"
+                           },
+                           new { @class = "icon-link icon-link-increase quantity-link", @title = "Dodaj produkt" })
+                    </td>
+
+                    <td>
+                        @{ decimal price = item.UnitPrice * item.Quantity; }
+                        <span class="price" id="product-price-@productId">
+                            @Math.Floor(price)
+                            <span>
+                                <span>
+                                    @Html.Raw(((int)((price % 1) * 100)).ToString("D2"))
+                                </span>
+                                <span>PLN</span>
+                            </span>
+                        </span>
+                    </td>
+
+                    <td>
+                        @Ajax.ActionLink("Remove", "RemoveProduct",
+                           new { @productId = productId },
+                           new AjaxOptions
+                           {
+                               HttpMethod = "GET",
+                               OnComplete = "refreshAll"
+                           },
+                           new { @class = "icon-link icon-link-delete", @title = "Usuń z koszyka" })
+                    </td>
+                </tr>
+            }
+        </table>
+
+        <div class="right">
+            @{ decimal totalprice = Model.TotalPrice; }
+            <span class="price">
+                Razem: @Math.Floor(totalprice)
+                <span>
+                    <span>
+                        @Html.Raw(((int)((totalprice % 1) * 100)).ToString("D2"))
+                    </span>
+                    <span>PLN</span>
+                </span>
+            </span>
+        </div>
+
+        <div class="cart-order-buttons">
+            @Ajax.ActionLink("Wyczyść koszyk", "RemoveAll",
+            new AjaxOptions
+            {
+                HttpMethod = "GET",
+                OnComplete = "refreshAll"
+            })
+            @Html.ActionLink("Złóż zamówienie", "Create", "Order")
+        </div>    
+
+        <script>
+            function refreshAll(result) {
+                $("#cart-content").html($("#cart-content", result.responseText).html());
+                $("#cart-icon").html($("#cart-icon", result.responseText).html());
+            }
+        </script>
+    }
+    else
+    {
+        <p>Koszyk jest pusty.</p>
+    }
+</div>

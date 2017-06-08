@@ -1,0 +1,38 @@
+﻿@model IEnumerable<GameStore.Models.Product>
+@using GameStore.Helpers
+
+@{
+    ViewBag.Title = "Zarządzaj produktami";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @Html.ActionLink("Dodaj nowy produkt", "Create", "Product") |
+    @Ajax.ActionLink("Zatwierdź wszystkie", "ConfirmAll", "Product", new AjaxOptions
+    {
+        HttpMethod = "GET",
+        InsertionMode = InsertionMode.Replace,
+        UpdateTargetId = "products-table"
+    })
+</p>
+
+@if (ViewBag.MaxPages > 0)
+{
+    for (int i = 1; i <= ViewBag.MaxPages; ++i)
+    {
+        @Html.ActionLink(i.ToString(), "Manage", new { pageNumber = i })
+
+        if (i != ViewBag.MaxPages)
+        {
+            @Html.Encode(" | ")
+        }
+    }
+    <div id="products-table">
+        @Html.Partial("~/Views/Product/_ProductsTable.cshtml", Model)
+    </div>
+}
+else
+{
+    <p>Nie dodano jeszcze żadnych produktów.</p>
+}

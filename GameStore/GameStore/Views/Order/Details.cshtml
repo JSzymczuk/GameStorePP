@@ -1,0 +1,108 @@
+﻿@model GameStore.Models.OrderDetailsViewModel
+@using GameStore.Helpers
+
+@{
+    ViewBag.Title = "Zamówienie nr: " + Model.Id.ToString();
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <table class="table products-table">
+        <tr>
+            <th style="width: 60px; text-align: right;">
+                Lp.
+            </th>
+            <th colspan="2">
+                Produkt
+            </th>
+            <th style="width: 139px">
+                Liczba sztuk
+            </th>
+            <th style="width: 110px">
+                Cena
+            </th>
+        </tr>
+
+        @{ int i = 1; }
+        @foreach (var item in Model.Positions)
+        {
+            int productId = item.Product.Id;
+            <tr>
+                <td class="right-align">
+                    @i.ToString()
+                    @{ ++i; }
+                </td>
+
+                <td style="width: 144px">
+                    @if (!string.IsNullOrWhiteSpace(item.Product.ThumbPath))
+                    {
+                        <img src="~/Images/@item.Product.ThumbPath" style="width: 128px" />
+                    }
+                </td>
+
+                <td class="left-align">
+                    @Html.ActionLink(string.Format("{0} ({1})", item.Product.Name, (item.Product.Platform.ShortName)), "Details", "Product", new { id = productId }, new { @class = "product-title" })
+                </td>
+
+                <td class="center-align">
+                    @item.Quantity
+                </td>
+
+                <td>
+                    @{ decimal price = item.UnitPrice * item.Quantity; }
+                    <span class="price" id="product-price-@productId">
+                        @Math.Floor(price)
+                        <span>
+                            <span>
+                                @Html.Raw(((int)((price % 1) * 100)).ToString("D2"))
+                            </span>
+                            <span>PLN</span>
+                        </span>
+                    </span>
+                </td>
+            </tr>
+        }
+    </table>
+
+    <div class="right">
+        @{ decimal totalprice = Model.Price; }
+        <span class="price">
+            Razem: @Math.Floor(totalprice)
+            <span>
+                <span>
+                    @Html.Raw(((int)((totalprice % 1) * 100)).ToString("D2"))
+                </span>
+                <span>PLN</span>
+            </span>
+        </span>
+    </div>
+    
+    <div class="clear"></div>
+
+    <h4 style="font-weight: bold">Historia zamówienia</h4>
+
+    <table class="table products-table">
+        <tr>
+            <th>Status</th>
+            <th>Informacja</th>
+            <th>Czas zmiany</th>
+        </tr>
+        @foreach (var change in Model.History)
+        {
+            <tr>
+                <td class="center-align">@change.Name</td>
+                <td>@change.Description</td>
+                <td class="center-align">
+                    @{ var date = change.Date; }
+                    @Html.Raw(string.Format("{0:D2}:{1:D2} {2}", 
+                        date.Hour, date.Minute, date.ToDisplayableDate()))
+                </td>
+            </tr>
+        }
+    </table>
+    <p>
+        @Html.ActionLink("Powrót", "Index", "Order")
+    </p>
+
+</div>

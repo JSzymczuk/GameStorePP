@@ -7,15 +7,11 @@ namespace GameStore.Models
 {
     public class Order
     {
-        [Key, Column(Order = 1)]
-        public int Id { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }        
 
-        [Column(Order = 2)]
-        public string ClientId { get; set; }
-
-        [Column(Order = 3)]
+        public string ClientId { get; set; }        
         public int AddressId { get; set; }
-
 
         public virtual AppUser Client { get; set; }
         public virtual Address Address { get; set; }
@@ -26,22 +22,12 @@ namespace GameStore.Models
 
     public class OrderPosition
     {
-        [Key, Column(Order = 1)]
-        public int Id { get; set; }
-
-        [Column(Order = 2)]
-        public int OrderId { get; set; }
-
-        [Column(Order = 3)]
+        public int Id { get; set; }        
+        public Guid? OrderId { get; set; }        
         public int ProductId { get; set; }
-
-
-        [Column(Order = 4)]
-        public double UnitPrice { get; set; }
-
-        [Column(Order = 5)]
+        
+        public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
-
 
         public virtual Order Order { get; set; }
         public virtual Product Product { get; set; }
@@ -49,31 +35,25 @@ namespace GameStore.Models
 
     public class OrderStatus
     {
-        [Key, Column(Order = 1)]
         public int Id { get; set; }
-
-        [Column(Order = 2)]
+        
         public string Name { get; set; }
-
-        [Column(Order = 3)]
+        
         public string Description { get; set; }
+
+        public bool Cancellable { get; set; }
 
         public virtual ICollection<OrderStatusChange> Changes { get; set; }
     }
 
     public class OrderStatusChange
     {
-        [Key, Column(Order = 1)]
         public int Id { get; set; }
-
-        [Column(Order = 2)]
-        public int OrderId { get; set; }
-
-        [Column(Order = 3)]
+        
+        public Guid OrderId { get; set; }
+        
         public int StatusId { get; set; }
-
-
-        [Column(Order = 4)]
+        
         public DateTime Date { get; set; }
 
 

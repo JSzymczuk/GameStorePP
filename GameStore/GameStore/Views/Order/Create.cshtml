@@ -1,0 +1,108 @@
+﻿@model GameStore.Models.Cart
+
+@{
+    ViewBag.Title = "Twoje zamówienie";
+}
+
+<h2>@ViewBag.Title</h2>
+<h4>Zweryfikuj swoje zamówienie i wybierz adres dostawy.</h4>
+<hr />
+
+<div>
+    @if (!Model.IsEmpty)
+    {
+        <table class="table products-table">
+            <tr>
+                <th style="width: 60px; text-align: right;">
+                    Lp.
+                </th>
+                <th colspan="2">
+                    Produkt
+                </th>
+                <th style="width: 139px">
+                    Liczba sztuk
+                </th>
+                <th style="width: 110px">
+                    Cena
+                </th>
+            </tr>
+
+            @{ int i = 1; }
+            @foreach (var item in Model)
+            {
+                int productId = item.Product.Id;
+                <tr>
+                    <td class="right-align">
+                        @i.ToString()
+                        @{ ++i; }
+                    </td>
+
+                    <td style="width: 144px">
+                        @if (!string.IsNullOrWhiteSpace(item.Product.ThumbPath))
+                        {
+                            <img src="~/Images/@item.Product.ThumbPath" style="width: 128px" />
+                        }
+                    </td>
+
+                    <td class="left-align">
+                        @Html.ActionLink(string.Format("{0} ({1})", item.Product.Name, (item.Product.Platform.ShortName)), "Details", "Product", new { id = productId }, new { @class = "product-title" })
+                    </td>
+
+                    <td class="center-align">
+                        @item.Quantity
+                    </td>
+
+                    <td>
+                        @{ decimal price = item.UnitPrice * item.Quantity; }
+                        <span class="price" id="product-price-@productId">
+                            @Math.Floor(price)
+                            <span>
+                                <span>
+                                    @Html.Raw(((int)((price % 1) * 100)).ToString("D2"))
+                                </span>
+                                <span>PLN</span>
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+            }
+        </table>
+
+        <div class="right">
+            @{ decimal totalprice = Model.TotalPrice; }
+            <span class="price">
+                Razem: @Math.Floor(totalprice)
+                <span>
+                    <span>
+                        @Html.Raw(((int)((totalprice % 1) * 100)).ToString("D2"))
+                    </span>
+                    <span>PLN</span>
+                </span>
+            </span>
+        </div>
+
+        <div class="clear"></div>
+
+        using (Html.BeginForm("Create", "Order", FormMethod.Post))
+        {
+            <div class="form-horizontal">
+                <div class="form-group">
+                    @Html.Label("Adres dostawy", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownList("AddressId", ViewBag.AddressId as SelectList, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Złóż zamówienie" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Koszyk jest pusty.</p>
+    }
+</div>

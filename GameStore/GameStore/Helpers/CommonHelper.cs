@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -43,6 +44,20 @@ namespace GameStore.Helpers
             return string.Format("{0} {1} {2}", date.Day, month, date.Year);
         }
 
+        public static string ToDisplayableAddress(this Address address)
+        {
+            StringBuilder result = new StringBuilder();
+            if (!string.IsNullOrWhiteSpace(address.Street))
+            { result.Append(address.Street + " "); }
+            if (!string.IsNullOrWhiteSpace(address.City))
+            { result.Append(address.City + " "); }
+            if (!string.IsNullOrWhiteSpace(address.PostalCode))
+            { result.Append(address.PostalCode + " "); }
+            if (!string.IsNullOrWhiteSpace(address.Region))
+            { result.Append(address.Region); }
+            return result.ToString();
+        }
+
         public static List<PegiInfo> ToPegiInfo(this IEnumerable<Pegi> collection)
         {
             var result = new List<PegiInfo>(collection.Count());
@@ -70,6 +85,31 @@ namespace GameStore.Helpers
                 { result.Add(pegi.Id); }
             }
             return result;
+        }
+
+        public static decimal GetTotalPrice(this Order order)
+        {
+            decimal total = 0;
+            foreach (var op in order.Positions)
+            { total += op.Quantity * op.UnitPrice; }
+            return total;
+        }
+
+        public static List<OrderStatusInfo> GetHistory(this Order order)
+        {
+            List<OrderStatusInfo> result = new List<OrderStatusInfo>(order.History.Count);
+            var hist = order.History.ToList();
+            foreach (var change in hist)
+            {
+                result.Add(new OrderStatusInfo
+                {
+                    Date = change.Date,
+                    Name = change.Status.Name,
+                    Description = change.Status.Description,
+                    Cancellable = change.Status.Cancellable
+                });
+            }
+            return result.OrderByDescending(p => p.Date).ToList();
         }
     }
 }

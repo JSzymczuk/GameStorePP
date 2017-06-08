@@ -1,0 +1,59 @@
+﻿@model List<GameStore.Models.Address>
+
+@{
+    ViewBag.Title = "Moje adresy";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @Html.ActionLink("Stwórz nowy adres", "AddAddress")
+</p>
+
+@if (Model.Count > 0)
+{
+    <table class="table">
+        <tr>
+            <th>
+                Adres
+            <th>
+                Uwagi
+            </th>
+            <th></th>
+        </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td @Html.Raw(item.Id == ViewBag.DefaultAddressId ? "class=\"bold\"" : string.Empty)>
+                @Html.DisplayFor(modelItem => item.Street)
+                
+                @item.City @item.PostalCode
+                
+                @Html.DisplayFor(modelItem => item.Region)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdditionalInfo)
+            </td>
+            <td>
+                @if (item.Id != ViewBag.DefaultAddressId)
+                {
+                    @Html.ActionLink("Default", "SetDefaultAddress", new { id = item.Id },
+                         new { @class = "icon-link icon-link-confirm", @title = "Ustaw jako domyślny" })
+                }
+                else
+                {
+                    <span class="unavailable-link-fill"></span>
+                }
+                @Html.ActionLink("Remove", "RemoveAddress", new { id = item.Id },
+                     new { @class = "icon-link icon-link-delete", @title = "Usuń adres" })
+            </td>
+        </tr>
+    }
+
+    </table>
+}
+else
+{
+    <p>Nie zapisano żadnego adresu.</p>
+}

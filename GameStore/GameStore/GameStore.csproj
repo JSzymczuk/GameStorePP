@@ -189,8 +189,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\OrderStatusController.cs" />
     <Compile Include="Controllers\PegiController.cs" />
     <Compile Include="Controllers\PlatformsController.cs" />
@@ -202,6 +204,7 @@
     <Compile Include="Helpers\CommonHelper.cs" />
     <Compile Include="Helpers\CookieHelper.cs" />
     <Compile Include="Helpers\NumericalBinder.cs" />
+    <Compile Include="Helpers\ProductPageHelper.cs" />
     <Compile Include="Helpers\SessionHelper.cs" />
     <Compile Include="Migrations\201706010935294_2017-06-01.cs" />
     <Compile Include="Migrations\201706010935294_2017-06-01.Designer.cs">
@@ -239,7 +242,56 @@
     <Compile Include="Migrations\201706041356191_2017-06-04-0.Designer.cs">
       <DependentUpon>201706041356191_2017-06-04-0.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706061542033_2017-06-06-0.cs" />
+    <Compile Include="Migrations\201706061542033_2017-06-06-0.Designer.cs">
+      <DependentUpon>201706061542033_2017-06-06-0.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706070251551_migration 2017-06-07-0.cs" />
+    <Compile Include="Migrations\201706070251551_migration 2017-06-07-0.Designer.cs">
+      <DependentUpon>201706070251551_migration 2017-06-07-0.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706070524232_2017-06-07-1.cs" />
+    <Compile Include="Migrations\201706070524232_2017-06-07-1.Designer.cs">
+      <DependentUpon>201706070524232_2017-06-07-1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706071431041_2017-06-07-2.cs" />
+    <Compile Include="Migrations\201706071431041_2017-06-07-2.Designer.cs">
+      <DependentUpon>201706071431041_2017-06-07-2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706080010335_2017-06-08-0.cs" />
+    <Compile Include="Migrations\201706080010335_2017-06-08-0.Designer.cs">
+      <DependentUpon>201706080010335_2017-06-08-0.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706080012316_2017-06-08-1.cs" />
+    <Compile Include="Migrations\201706080012316_2017-06-08-1.Designer.cs">
+      <DependentUpon>201706080012316_2017-06-08-1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706080013344_2017-06-08-2.cs" />
+    <Compile Include="Migrations\201706080013344_2017-06-08-2.Designer.cs">
+      <DependentUpon>201706080013344_2017-06-08-2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706080014109_2017-06-08-3.cs" />
+    <Compile Include="Migrations\201706080014109_2017-06-08-3.Designer.cs">
+      <DependentUpon>201706080014109_2017-06-08-3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706080014548_2017-06-08-4.cs" />
+    <Compile Include="Migrations\201706080014548_2017-06-08-4.Designer.cs">
+      <DependentUpon>201706080014548_2017-06-08-4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706080030080_2017-06-08-5.cs" />
+    <Compile Include="Migrations\201706080030080_2017-06-08-5.Designer.cs">
+      <DependentUpon>201706080030080_2017-06-08-5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706080050400_2017-06-08-6.cs" />
+    <Compile Include="Migrations\201706080050400_2017-06-08-6.Designer.cs">
+      <DependentUpon>201706080050400_2017-06-08-6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706080131125_2017-06-08-7.cs" />
+    <Compile Include="Migrations\201706080131125_2017-06-08-7.Designer.cs">
+      <DependentUpon>201706080131125_2017-06-08-7.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\CartModels.cs" />
     <Compile Include="Models\OrderModels.cs" />
     <Compile Include="Models\ProductModels.cs" />
     <Compile Include="Models\_DbContext.cs" />
@@ -248,6 +300,7 @@
     <Compile Include="ViewModels\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\OrderViewModels.cs" />
     <Compile Include="ViewModels\ProductViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -266,6 +319,8 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -328,6 +383,17 @@
     <Content Include="Views\Product\Edit.cshtml" />
     <Content Include="Views\Product\_RequirementsEdit.cshtml" />
     <Content Include="Views\Product\_Requirements.cshtml" />
+    <Content Include="Views\Product\_ProductsTable.cshtml" />
+    <Content Include="Views\Product\Manage.cshtml" />
+    <Content Include="Views\Search\_ProductBox.cshtml" />
+    <Content Include="Views\Manage\AddAddress.cshtml" />
+    <Content Include="Views\Manage\MyAddresses.cshtml" />
+    <Content Include="Views\Cart\Index.cshtml" />
+    <Content Include="Views\Shared\_CartItems.cshtml" />
+    <Content Include="Views\Order\Create.cshtml" />
+    <Content Include="Views\Order\Index.cshtml" />
+    <Content Include="Views\Order\Details.cshtml" />
+    <Content Include="Views\Order\Manage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -375,6 +441,42 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706041356191_2017-06-04-0.resx">
       <DependentUpon>201706041356191_2017-06-04-0.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706061542033_2017-06-06-0.resx">
+      <DependentUpon>201706061542033_2017-06-06-0.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706070251551_migration 2017-06-07-0.resx">
+      <DependentUpon>201706070251551_migration 2017-06-07-0.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706070524232_2017-06-07-1.resx">
+      <DependentUpon>201706070524232_2017-06-07-1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706071431041_2017-06-07-2.resx">
+      <DependentUpon>201706071431041_2017-06-07-2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706080010335_2017-06-08-0.resx">
+      <DependentUpon>201706080010335_2017-06-08-0.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706080012316_2017-06-08-1.resx">
+      <DependentUpon>201706080012316_2017-06-08-1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706080013344_2017-06-08-2.resx">
+      <DependentUpon>201706080013344_2017-06-08-2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706080014109_2017-06-08-3.resx">
+      <DependentUpon>201706080014109_2017-06-08-3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706080014548_2017-06-08-4.resx">
+      <DependentUpon>201706080014548_2017-06-08-4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706080030080_2017-06-08-5.resx">
+      <DependentUpon>201706080030080_2017-06-08-5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706080050400_2017-06-08-6.resx">
+      <DependentUpon>201706080050400_2017-06-08-6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706080131125_2017-06-08-7.resx">
+      <DependentUpon>201706080131125_2017-06-08-7.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

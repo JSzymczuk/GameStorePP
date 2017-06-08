@@ -20,6 +20,9 @@ namespace GameStore.Controllers
         public const int ProductCoverThumbWidth = 64 * 3;
         public const int ProductCoverThumbHeight = 64 * 4;
 
+        private const string sessionPageNumber = "Manage_Current_Page";
+        private const string sessionPageSize = "Manage_Page_Size";
+
         private ApplicationUserManager _userManager;
         private ApplicationDbContext db = new ApplicationDbContext();
 
@@ -39,11 +42,19 @@ namespace GameStore.Controllers
             }
         }
 
-        public ActionResult Manage()
+        public ActionResult Manage(int? pageNumber, int? pageSize)
         {
-            return RedirectToAction("Index", "Search");
+            var pageInfo = ProductPageHelper.GetProducts(db.Products.Include(p => p.Platform), pageNumber, pageSize, Session.Get<int?>(sessionPageNumber), Session.Get<int?>(sessionPageSize), p => true);
+
+            Session.Set(sessionPageSize, pageInfo.PageSize);
+            Session.Set(sessionPageNumber, pageInfo.CurrentPage);
+
+            ViewBag.CurrentPage = pageInfo.CurrentPage;
+            ViewBag.MaxPages = pageInfo.TotalPages;
+
+            return View(pageInfo.Products);
         }
-        
+
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -68,6 +79,7 @@ namespace GameStore.Controllers
                 Pegi = product.Pegi.ToList().OrderByDescending(p => p.Priority).ToList(),
                 MinimalRequirements = product.MinimumRequirements,
                 RecommendedRequirements = product.RecommendedRequirements,
+                Quantity = product.Quantity,
                 State = product.State.GetDisplayName(),
                 AddedInfo = FormatStateUserDateChange(product.DateAdded, product.AddedBy),
                 EditedInfo = FormatStateUserDateChange(product.DateEdited, product.EditedBy),
@@ -244,13 +256,34 @@ namespace GameStore.Controllers
             return RedirectToAction("Manage");
         }
         
-        public ActionResult ConfirmAll()
+        public PartialViewResult ConfirmAll()
         {
             var some = db.Products.Where(p => p.State == ProductState.Created).ToList();
             some.ForEach(p => p.State = ProductState.Visible);
             db.SaveChanges();
+            return RefreshProductTablePage();
+        }
 
-            return RedirectToAction("Manage");
+        public PartialViewResult Confirm(int? id)
+        {
+            var product = db.Products.Find(id);
+            if (product != null)
+            {
+                product.State = ProductState.Visible;
+                db.SaveChanges();
+            }
+            return RefreshProductTablePage();
+        }
+
+        public PartialViewResult ChangeQuantity(int? id, int quantity)
+        {
+            var product = db.Products.Find(id);
+            if (product != null)
+            {
+                product.Quantity = Math.Max(product.Quantity + quantity, 0);
+                db.SaveChanges();
+            }
+            return RefreshProductTablePage();
         }
 
         protected override void Dispose(bool disposing)
@@ -354,6 +387,17 @@ namespace GameStore.Controllers
                 else
                 { product.RecommendedRequirements = newReqs; }
             }
+        }
+
+        private PartialViewResult RefreshProductTablePage()
+        {
+            var pageInfo = ProductPageHelper.GetProducts(
+                db.Products.Include(p => p.Platform),
+                null, null, Session.Get<int?>(sessionPageNumber),
+                Session.Get<int?>(sessionPageSize), p => true);
+            ViewBag.CurrentPage = pageInfo.CurrentPage;
+            ViewBag.MaxPages = pageInfo.TotalPages;
+            return PartialView("_ProductsTable", pageInfo.Products);
         }
     }
 }

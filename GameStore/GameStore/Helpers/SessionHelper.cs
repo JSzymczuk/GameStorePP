@@ -10,7 +10,7 @@ namespace GameStore.Helpers
     {
         public static bool IsSet(this HttpSessionStateBase session, string key)
         {
-            return session[key] == null;
+            return session[key] != null;
         }
 
         public static T Get<T>(this HttpSessionStateBase session, string key)

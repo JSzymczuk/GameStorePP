@@ -15,8 +15,8 @@ namespace GameStore.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        public int DefaultAddressId { get; set; }
-
+        public int? DefaultAddressId { get; set; }
+        
         public virtual ICollection<Address> Adresses { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
 
@@ -30,32 +30,27 @@ namespace GameStore.Models
     [TableName("Addresses")]
     public class Address
     {
-        [Key, Column(Order = 1)]
         public int Id { get; set; }
 
-        [Column(Order = 2)]
         public string UserId { get; set; }
 
-
-        [Column(Order = 3)]
+        [Display(Name = "Aktywny?")]
         public bool IsDeleted { get; set; }
 
-
-        [Column(Order = 4)]
+        [Display(Name = "Województwo")]
         public string Region { get; set; }
 
-        [Column(Order = 5)]
+        [Display(Name = "Miejscowość")]
         public string City { get; set; }
 
-        [Column(Order = 6)]
+        [Display(Name = "Ulica")]
         public string Street { get; set; }
 
-        [Column(Order = 7)]
+        [Display(Name = "Kod pocztowy")]
         public string PostalCode { get; set; }
 
-        [Column(Order = 8)]
+        [Display(Name = "Dodatkowe informacje")]
         public string AdditionalInfo { get; set; }
-
 
         public virtual AppUser User { get; set; }
         

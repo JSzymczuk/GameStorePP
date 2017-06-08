@@ -8,6 +8,7 @@
         Model.ReleaseDate.Value.Month, 
         Model.ReleaseDate.Value.Day)
         : string.Empty;
+    int? unknown = null;
 }
 
 <h2>@ViewBag.Title</h2>
@@ -140,7 +141,7 @@
 }
 
 <div>
-    @Html.ActionLink("Powrót", "Index", "Search")
+    @Html.ActionLink("Powrót", "Manage", "Product", new { pageNumber = unknown, pageSize = unknown }, new { })
 </div>
 
 @section Scripts {

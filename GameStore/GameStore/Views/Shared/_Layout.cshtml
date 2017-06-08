@@ -7,7 +7,6 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
-
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -18,22 +17,26 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Game Store", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Search", "Index", "Search")</li>
+                    <li>@Html.ActionLink("Lista produktów", "Index", "Search")</li>
+                    <li>@Html.ActionLink("Zarządzanie produktami", "Manage", "Product")</li>
+                    <li>@Html.ActionLink("Moje zamówienia", "Index", "Order")</li>
+                    <li>@Html.ActionLink("Moje adresy", "MyAddresses", "Manage")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>
     <div class="container body-content">
-        @RenderBody()
+        <main>
+            @RenderBody()
+        </main>
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - GameStore</p>
+            <p class="center-align">&copy; @DateTime.Now.Year - GameStore</p>
         </footer>
     </div>
 

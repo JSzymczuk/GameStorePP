@@ -16,6 +16,40 @@
         @Html.ActionLink("Edycja", "Edit", "Product", new { id = Model.Id }, new { })
     }
     <hr />
+    
+    @if (Model.Quantity > 0)
+    {
+        using (Ajax.BeginForm("AddProduct", "Cart", new { }, new AjaxOptions
+        {
+            HttpMethod = "POST",
+            OnComplete = "productAdded"
+        }, new { @class = "add-to-cart" }))
+        {
+            <input name="quantity" id="quantity" type="number" min="1" max="@Math.Min(10, Model.Quantity)" value="1" />
+            <input name="productId" type="hidden" value="@Model.Id" />
+            <input type="submit" value="do koszyka" />
+        }
+    }
+
+    <script>
+        function productAdded(result) {
+            var rjn = result.responseJSON;
+            if (rjn.left) {
+                var qtt = $("#quantity");
+                qtt.attr("value", 1);
+                qtt.attr("max", rjn.left);
+                qtt.val(1);
+            }
+            else {
+                $(".add-to-cart").remove();
+            }
+            if (rjn.cartTotal) {
+                var cart = $("#cart-icon");
+                cart.find(".items-count").remove();
+                cart.append("<span class=\"items-count\">" + rjn.cartTotal + "</span>");
+            }
+        }
+    </script>
 
     <div class="overflow-hidden">
         @if (!string.IsNullOrWhiteSpace(Model.CoverPath))
@@ -70,6 +104,11 @@
 
             <dd>
                 @string.Format("{0:N2}zł", Model.Price)
+                @if (Model.Quantity <= 0)
+                {
+                    <br />
+                    <span class="gray-text">produkt niedostępny</span>
+                }
             </dd>
         </dl>
     </div>
@@ -151,5 +190,5 @@
 </div>
 
 <p>
-    @Html.ActionLink("Powrót", "Index", "Search")
+    @Html.ActionLink("Powrót", "Index", "Search", new { }, new { })
 </p>

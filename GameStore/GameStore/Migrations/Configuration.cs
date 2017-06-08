@@ -94,11 +94,11 @@ namespace GameStore.Migrations
 
             var platforms = new List<Platform>
             {
-                new Platform  { Id = 1, Name = "PC" },
-                new Platform  { Id = 2, Name = "Playstation 3" },
-                new Platform  { Id = 3, Name = "Playstation 4" },
-                new Platform  { Id = 4, Name = "Xbox One" },
-                new Platform  { Id = 5, Name = "Xbox 360" }
+                new Platform  { Id = 1, Name = "PC", ShortName = "PC" },
+                new Platform  { Id = 2, Name = "Playstation 3", ShortName = "PS3" },
+                new Platform  { Id = 3, Name = "Playstation 4", ShortName = "PS4" },
+                new Platform  { Id = 4, Name = "Xbox One", ShortName = "XBOX ONE" },
+                new Platform  { Id = 5, Name = "Xbox 360", ShortName = "XBOX 360" }
             };
             foreach (var platform in platforms)
             {
@@ -237,45 +237,58 @@ namespace GameStore.Migrations
                 {
                      Id = 1,
                      Name = "Oczekuj¹ce",
-                     Description = "Zamówienie oczekuje na p³atnoœæ."
+                     Description = "Zamówienie oczekuje na p³atnoœæ.",
+                     Cancellable = true
                 },
                 new OrderStatus
                 {
                      Id = 2,
                      Name = "Op³acone",
-                     Description = "Zamówienie oczekuje na rozpoczêcie realizacji."
+                     Description = "Zamówienie oczekuje na rozpoczêcie realizacji.",
+                     Cancellable = true
                 },
                 new OrderStatus
                 {
                      Id = 3,
                      Name = "Zarejestrowane",
-                     Description = "Zamówienie zosta³o przyjête i rozpoczê³o siê kompletowanie towaru."
+                     Description = "Zamówienie zosta³o przyjête i rozpoczê³o siê kompletowanie towaru.",
+                     Cancellable = true
                 },
                 new OrderStatus
                 {
                      Id = 4,
                      Name = "Skompletowane",
-                     Description = "Zamówienie oczekuje na wysy³kê."
+                     Description = "Zamówienie oczekuje na wysy³kê.",
+                     Cancellable = true
                 },
                 new OrderStatus
                 {
                      Id = 5,
                      Name = "Wys³ane",
-                     Description = "Zamówienie zosta³o wys³ane."
+                     Description = "Zamówienie zosta³o wys³ane.",
+                     Cancellable = false
                 },
                 new OrderStatus
                 {
                      Id = 6,
                      Name = "Zrealizowane",
-                     Description = "Zamówienie zosta³o dostarczone i odebrane."
+                     Description = "Zamówienie zosta³o dostarczone i odebrane.",
+                     Cancellable = false
                 },
                 new OrderStatus
                 {
                      Id = 7,
                      Name = "Anulowane",
-                     Description = "Zamówienie zosta³o anulowane przez u¿ytkownika."
+                     Description = "Zamówienie zosta³o anulowane przez u¿ytkownika.",
+                     Cancellable = false
                 }
             };
+
+            foreach (var st in statuses)
+            {
+                if (!db.OrderStatuses.Any(s => s.Name == st.Name))
+                { db.OrderStatuses.Add(st); }
+            }
 
             #endregion
 

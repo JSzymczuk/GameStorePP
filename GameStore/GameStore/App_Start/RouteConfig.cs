@@ -20,8 +20,20 @@ namespace GameStore
                 {
                     controller = "Search",
                     action = "Index",
-                    pageSize = Controllers.SearchController.DefaultPageSize,
-                    pageNumber = Controllers.SearchController.DefaultPageNumber
+                    pageSize = 0,
+                    pageNumber = 0
+                }
+            );
+
+            routes.MapRoute(
+                name: "Product/Manage",
+                url: "Product/Manage/{pageNumber}/{pageSize}",
+                defaults: new
+                {
+                    controller = "Product",
+                    action = "Manage",
+                    pageSize = 0,
+                    pageNumber = 0
                 }
             );
 

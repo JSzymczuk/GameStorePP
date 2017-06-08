@@ -1,0 +1,12 @@
+﻿@using GameStore.Helpers;
+
+@{  
+    if (Session.IsSet("Cart"))
+    {
+        int count = Session.Get<GameStore.Models.Cart>("Cart").TotalProducts;
+        if (count > 0)
+        {
+            <span class="items-count">@count</span>
+        }
+    }
+}

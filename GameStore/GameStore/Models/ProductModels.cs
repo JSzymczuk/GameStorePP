@@ -28,6 +28,8 @@ namespace GameStore.Models
         [Display(Name = "Cena")]
         public decimal? Price { get; set; }
 
+        [Display(Name = "Sztuk w magazynie")]
+        public int Quantity { get; set; }
         [Display(Name = "Stan")]
         public ProductState State { get; set; }
         [Display(Name = "Data dodania")]
@@ -69,8 +71,12 @@ namespace GameStore.Models
     {
         [Key]
         public int Id { get; set; }
+
         [Display(Name = "Platforma")]
         public string Name { get; set; }
+
+        [Display(Name = "Nazwa skrócona")]
+        public string ShortName { get; set; }
 
         public virtual ICollection<Product> Products { get; set; }
     }

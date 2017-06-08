@@ -208,4 +208,16 @@ C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameS
 C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.dll
 C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.pdb
 C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.Migrations._201706040.resources
+C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.Migrations._201706060.resources
+C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.Migrations.migration201706070.resources
+C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.Migrations._201706071.resources
+C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.Migrations._201706072.resources
+C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.Migrations._201706080.resources
+C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.Migrations._201706081.resources
+C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.Migrations._201706082.resources
+C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.Migrations._201706083.resources
+C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.Migrations._201706084.resources
+C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.Migrations._201706085.resources
+C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.Migrations._201706086.resources
+C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.Migrations._201706087.resources
 C:\Users\Kuba\Documents\Projekty\GameStorePP\GameStore\GameStore\obj\Debug\GameStore.csprojResolveAssemblyReference.cache
